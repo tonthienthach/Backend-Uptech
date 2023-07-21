@@ -4,6 +4,9 @@ require("dotenv").config();
 
 const app = express();
 
+const { DBconnect } = require("./configs/ConnectDB");
+DBconnect();
+
 const corsOptions = {
   origin: "http://localhost:3000",
   credentials: true, //access-control-allow-credentials:true
