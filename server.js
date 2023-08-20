@@ -1,10 +1,27 @@
 const express = require("express");
 const session = require("express-session");
+const morgan = require('morgan');
+const cart = require('./routes/cart');
+const product = require('./routes/products');
 const Brands = require('./models/Orders')
+const helmet = require('helmet');
+var compress = require('compression')
+const cors = require('cors');
+const indexRoutes = require('./routes/index');
+
 require("dotenv").config();
 
 const app = express();
 
+// Use compress!
+app.use(compress());
+// Use Helmet!
+app.use(helmet());
+// HTTP  logger
+app.use(morgan('combined'));
+app.use(cors());
+
+app.use('/api', indexRoutes);
 const { DBconnect } = require("./configs/ConnectDB");
 DBconnect();
 
