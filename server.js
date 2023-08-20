@@ -1,9 +1,10 @@
 const express = require("express");
 const session = require("express-session");
-const Brands = require('./models/Orders')
+
 require("dotenv").config();
 
 const app = express();
+const route = require('./routes/index');
 
 const { DBconnect } = require("./configs/ConnectDB");
 DBconnect();
@@ -24,13 +25,7 @@ app.use(
   })
 );
 
-const brand = new Brands({ name: "PhongVu" })
-
-app.get('/chauanh', async (req, res) => {
-  const products = await Brands.find({})
-  res.json(products);
-  //res.send('ChauAnh');
-})
+app.use('/api', route)
 
 app.listen(process.env.PORT, () => {
   console.log(`app is running on port ${process.env.PORT}`);
