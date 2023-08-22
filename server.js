@@ -1,10 +1,23 @@
 const express = require("express");
 const session = require("express-session");
+const morgan = require('morgan');
+const helmet = require('helmet');
+const compress = require('compression')
+const cors = require('cors');
 
 require("dotenv").config();
 
-const app = express();
 const route = require('./routes/index');
+const app = express();
+
+// Use compress!
+app.use(compress());
+// Use Helmet!
+app.use(helmet());
+// HTTP  logger
+app.use(morgan('combined'));
+app.use(cors());
+
 
 const { DBconnect } = require("./configs/ConnectDB");
 DBconnect();
