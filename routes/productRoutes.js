@@ -4,7 +4,7 @@ const Products = require('../models/Products');
 const productsController = require('../controllers/productsController')
 
 
-router.get('/', productsController.getAllProducts)
+router.get('/', productsController.updateData)
 router.get('/:slug', productsController.getProduct)
 
 module.exports = router

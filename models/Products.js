@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const Categories = require('./Categories');
+const Brands = require('./Brands')
+
 const productSchema = new mongoose.Schema({
     _id: {
         type: Schema.Types.ObjectId
@@ -7,11 +10,11 @@ const productSchema = new mongoose.Schema({
     _name: String,
     _brandId: {
         type: Schema.Types.ObjectId,
-        ref: 'Brands'
+        ref: Brands
     },
     _categoryId: {
         type: Schema.Types.ObjectId,
-        ref: 'Categories' // Referencing the 'Category' model
+        ref: Categories // Referencing the 'Category' model
     },
     _detail: String,
     _images: Array,
