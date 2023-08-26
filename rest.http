@@ -1,8 +1,16 @@
 # GET a product by id 
 GET http://localhost:5000/api/products/64b6367474e10f82ea5c17d7
 ###
+
+# GET all products  
+GET http://localhost:5000/api/products
+###
 #GET list cart by UserID
 GET http://localhost:5000/api/carts/?userId=64b8b4a1116933190a3d3544
 ###
 # GET 10 product by name 
 GET http://localhost:5000/api/searchs?q=Laptop
+
+###
+# GET all categories  
+GET http://localhost:5000/api/categories
