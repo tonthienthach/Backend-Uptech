@@ -19,9 +19,9 @@ const productSchema = new mongoose.Schema({
     _detail: String,
     _images: Array,
     _name: String,
-    _price: String,
+    _price: Schema.Types.Number,
     _quantity: String,
-    _salePercent: Schema.Types.Decimal128,
+    _salePercent: Schema.Types.Number,
     _sold: Schema.Types.Number,
     _status: Boolean,
     _clickCount: Schema.Types.Number
