@@ -21,9 +21,10 @@ const productSchema = new mongoose.Schema({
     _name: String,
     _price: String,
     _quantity: String,
-    _salePercent: String,
-    _sold: String,
-    _status: String, //Selling - Not Selling
+    _salePercent: Schema.Types.Decimal128,
+    _sold: Schema.Types.Number,
+    _status: Boolean,
+    _clickCount: Schema.Types.Number
 
 });
 
