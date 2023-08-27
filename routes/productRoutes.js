@@ -9,6 +9,7 @@ router.get('/', productsController.getAllProducts)
 router.get('/mostSearched', productsController.getMostSearched)
 router.get('/onSale', productsController.getOnSale)
 router.get('/bestSelling', productsController.getBestSelling)
+router.get('/related_products/:slug', productsController.getReLatedProducts)
 router.get('/:slug', productsController.getProduct)
 
 
