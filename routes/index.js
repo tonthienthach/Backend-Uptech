@@ -14,6 +14,8 @@ const profileAdminRoutes = require('./profileAdminRoutes.js')
 const reviewRoutes = require('./reviewRoutes.js')
 const brandRoutes = require('./brandRoutes.js')
 
+const profileShipperRoutes = require('./shipper/profileShipperRoutes.js')
+
 router.use('/products', productRoutes)
 router.use('/categories', categoryRoutes)
 router.use('/banners', bannerRoutes)
@@ -26,6 +28,9 @@ router.use('/brands', brandRoutes)
 router.use('/admin/employees', employeeAdminRoutes)
 router.use('/admin/orders', orderAdminRoutes)
 router.use('/admin/profile', profileAdminRoutes)
+
+//SHIPPER
+router.use('/shipper/profile', profileShipperRoutes)
 
 
 module.exports = router
