@@ -1,17 +1,29 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const bannerSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
+// Định nghĩa schema cho mục trong order (_Items)
+const ItemSchema = new Schema({
+    itemId: {
+      type: Schema.Types.ObjectId,
+      required: true
+    },
+    quantity: {
+      type: String,
+      required: true,
+      min: [1, 'Số lượng không được ít hơn 1.']
+    }
+  });
+
+const ordersSchema = new mongoose.Schema({
     _address: String,
-    _items: Array,
     _name: String,
     _phone: String,
-    _status: String,
-    _totalPayment: String,
-    _uId: { type: mongoose.Schema.Types.ObjectId, ref: 'Users' },
-    _shippingFee: String
-
+    _status: Number,
+    _totalPayment: Number,
+    _uId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' }, // Đảm bảo rằng collection là 'users' hoặc 'Users' tùy theo cấu hình thực tế của bạn.
+    _shippingFee: Number,
+    _items: [ItemSchema]
 });
 
-const Banners = mongoose.model('banners', bannerSchema);
-module.exports = Banners;
+const Orders = mongoose.model('orders', ordersSchema);
+module.exports = Orders;
