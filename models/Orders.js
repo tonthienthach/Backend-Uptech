@@ -13,8 +13,8 @@ const ItemSchema = new Schema({
       min: [1, 'Số lượng không được ít hơn 1.']
     }
   });
-
 const ordersSchema = new mongoose.Schema({
+    _id: mongoose.Schema.Types.ObjectId,
     _address: String,
     _name: String,
     _phone: String,

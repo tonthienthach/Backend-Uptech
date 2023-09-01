@@ -1,6 +1,5 @@
 const Banners = require('../models/Banners');
-const Product = require('../models/Products'); // Đường dẫn đến model Products
-class OtherController {
+class BannersController {
 
     async getBannerImgs(req, res, next) {
         await Banners.find({})
@@ -14,4 +13,4 @@ class OtherController {
 }
 
 
-module.exports = new OtherController
+module.exports = new BannersController
