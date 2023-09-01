@@ -7,6 +7,7 @@ const bannerRoutes = require('./bannerRoutes.js')
 const searchRoutes = require('./searchRoutes.js')
 const accountRoutes = require('./accountRoutes.js')
 const cartRoutes = require('./cartRoutes.js')
+const orderRoutes = require('./orderRoutes.js')
 const employeeAdminRoutes = require('./employeeAdminRoutes.js')
 const Banners = require('../models/Banners.js')
 const orderAdminRoutes = require('./orderAdminRoutes.js')
@@ -22,6 +23,8 @@ router.use('/banners', bannerRoutes)
 router.use('/searchs', searchRoutes)
 router.use('/accounts', accountRoutes)
 router.use('/carts', cartRoutes)
+router.use('/orders', orderRoutes)
+=======
 router.use('/reviews', reviewRoutes)
 router.use('/brands', brandRoutes)
 //ADMIN
@@ -31,6 +34,5 @@ router.use('/admin/profile', profileAdminRoutes)
 
 //SHIPPER
 router.use('/shipper/profile', profileShipperRoutes)
-
 
 module.exports = router
