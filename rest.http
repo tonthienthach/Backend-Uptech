@@ -14,3 +14,44 @@ GET http://localhost:5000/api/searchs?q=Laptop
 ###
 # GET all categories  
 GET http://localhost:5000/api/categories
+###
+# get order
+GET http://localhost:5000/api/orders/?userId=64b64acd850413a49cf46677
+
+###
+# Post order
+POST http://localhost:5000/api/orders/create
+Content-Type: application/json
+
+{
+    "_address": "12345, Vuon Lai, An Phu Dong, q2, HCM",
+    "_name": "huynh khoa",
+    "_phone": "0948893309",
+    "_status":0,
+    "_totalPayment": 130000,
+    "_shippingFee": 35000,
+    "_uId": "64e762df7393bfa08250a252",
+    "_items": [
+        {
+            "itemId": "64b6367474e10f82ea5c17d7",
+            "quantity": 2
+        },
+        {
+            "itemId": "64b65043850413a49cf46686",
+            "quantity": 1
+        }
+    ]
+}
+
+###
+# Post vnpay
+POST http://localhost:5000/api/orders/vnpayCreatePayment
+Content-Type: application/json
+
+{
+    "amount": 100000,
+    "orderDescription": "Order description",
+    "orderType": "payment",
+    "language": "vn",
+    "bankCode": "SCB"
+}

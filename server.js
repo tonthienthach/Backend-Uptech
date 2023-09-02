@@ -9,7 +9,7 @@ require("dotenv").config();
 
 const route = require('./routes/index');
 const app = express();
-
+app.use(express.json());
 // Use compress!
 app.use(compress());
 // Use Helmet!

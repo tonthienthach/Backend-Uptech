@@ -8,7 +8,7 @@ class CartsController {
     getCart = async (req, res) => {
         try {
             const { userId } = req.query;
-            const cart = await Cart.findOne({ uId: userId }).populate('_cartItems.itemId');
+            const cart = await Cart.findOne({ uId: userId });
 
             if (!cart) {
                 return res.status(404).json({ message: 'Không tìm thấy giỏ hàng cho user ID này.' });
