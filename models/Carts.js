@@ -12,7 +12,7 @@ const ItemSchema = new Schema({
     unique: true
   },
   quantity: {
-    type: String,
+    type: Number,
     required: true,
     min: [1, 'Số lượng không được ít hơn 1.']
   },

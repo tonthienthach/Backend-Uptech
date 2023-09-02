@@ -22,7 +22,7 @@ class CartsController {
 
 
 
-    // api/cart/:slug/add-to-cart
+    // api/cart/:uId/add-to-cart
     // VD: api/carts/64b6413d850413a49cf46648/add-to-cart
     addToCart = async (req, res, next) => {
         await Cart.init()
@@ -45,9 +45,20 @@ class CartsController {
                     }
                 )
             } else {
-                res.json({
-                    message: 'Item already existed or maybe cart was not found',
+                const cart = await Cart.findOneAndUpdate({ uId: req.params.slug, "_cartItems.itemId": { $eq: req.body.itemId } },
+                    { $inc: { "_cartItems.$.quantity": req.body.quantity } }, {
+                    new: true
                 })
+                if (cart) {
+                    res.json({
+                        message: 'Item already existed so only adding updating quantity!',
+                        data: {
+                            updatedCart: cart
+                        }
+
+                    })
+                }
+
             }
         }
         catch (error) {
