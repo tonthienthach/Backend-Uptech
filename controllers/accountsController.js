@@ -59,6 +59,41 @@ class UsersController {
         }
 
     }
+
+    // log in
+    // api/accounts/login
+    // body: {
+    //     "_email": "nguyenkieuchauanh0908@gmail.com",
+    //     "_pw": "chauanh0908@T"
+    // }
+    logIn = async (req, res, next) => {
+        const user = {
+            _email: req.body._email,
+            _pw: req.body._pw
+        }
+        try {
+            const auth = await Users.findOne({ _email: user._email, _pw: user._pw })
+            if (auth) {
+
+                res.status(200).json({
+                    message: "Đăng nhập thành công!"
+                })
+            }
+            else {
+                res.status(400).json({
+                    message: "Email hoặc mật khẩu không đúng!",
+                })
+            }
+
+        }
+        catch (err) {
+            res.status(400).json({
+                message: err.message
+            })
+        }
+
+    }
+
 }
 
 module.exports = new UsersController
