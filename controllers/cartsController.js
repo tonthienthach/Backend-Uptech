@@ -23,7 +23,7 @@ class CartsController {
 
 
     // api/cart/:uId/add-to-cart
-    // VD: api/carts/64b6413d850413a49cf46648/add-to-cart
+    // VD: http://localhost:5000/api/carts/64b6413d850413a49cf46648/add-to-cart
     addToCart = async (req, res, next) => {
         await Cart.init()
         try {
@@ -34,6 +34,7 @@ class CartsController {
             },
                 { new: true }
             )
+            //Nếu sản phẩm chưa có trong giỏ hàng thì thêm vào giỏ
             if (cart) {
                 await cart.save()
                 res.status(200).json(
@@ -44,7 +45,9 @@ class CartsController {
                         }
                     }
                 )
-            } else {
+            }
+            //Nếu sản phẩm đã có sẵn trong giỏ hàng thì chỉ cập nhật số lượng
+            else {
                 const cart = await Cart.findOneAndUpdate({ uId: req.params.slug, "_cartItems.itemId": { $eq: req.body.itemId } },
                     { $inc: { "_cartItems.$.quantity": req.body.quantity } }, {
                     new: true

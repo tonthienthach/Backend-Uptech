@@ -8,32 +8,24 @@ const ItemSchema = new Schema({
   itemId: {
     type: Schema.Types.ObjectId,
     ref: Products,
-    required: true,
-    unique: true
+    required: true
   },
   quantity: {
     type: Number,
     required: true,
     min: [1, 'Số lượng không được ít hơn 1.']
-  },
-  _id: {
-    type: Schema.Types.ObjectId,
-    ref: Products,
-
-    unique: true
   }
 });
 
 // Định nghĩa schema cho collection "carts"
 const cartSchema = new Schema({
-  _id: Schema.Types.ObjectId,
+  //_id: Schema.Types.ObjectId,
   _cartItems: [ItemSchema],
   uId: {
     type: Schema.Types.ObjectId,
     ref: Users,
     required: true
-  },
-  _name: String
+  }
 });
 
 // Tạo model "Carts" dựa trên schema "cartSchema"

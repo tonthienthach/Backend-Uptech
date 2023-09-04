@@ -4,9 +4,9 @@ const Categories = require('./Categories');
 const Brands = require('./Brands')
 
 const productSchema = new mongoose.Schema({
-    _id: {
-        type: Schema.Types.ObjectId
-    },
+    // _id: {
+    //     type: Schema.Types.ObjectId
+    // },
     _name: String,
     _brandId: {
         type: Schema.Types.ObjectId,
