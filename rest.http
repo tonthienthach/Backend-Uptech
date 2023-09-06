@@ -49,9 +49,9 @@ POST http://localhost:5000/api/orders/vnpayCreatePayment
 Content-Type: application/json
 
 {
-    "amount": 100000,
-    "orderDescription": "Order description",
-    "orderType": "payment",
-    "language": "vn",
-    "bankCode": "SCB"
+    "amount": 10000,
+    "bankCode": "NCB",
+    "orderDescription": "Nap tien cho thue bao 0123456789. So tien 100,000 VND",
+    "orderType": "100000",
+    "language": "vn"
 }

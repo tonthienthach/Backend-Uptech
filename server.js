@@ -17,6 +17,7 @@ app.use(helmet());
 // HTTP  logger
 app.use(morgan('combined'));
 app.use(cors());
+app.set('view engine', 'pug');
 
 
 const { DBconnect } = require("./configs/ConnectDB");

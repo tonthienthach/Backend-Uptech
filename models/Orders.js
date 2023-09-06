@@ -14,15 +14,16 @@ const ItemSchema = new Schema({
   }
 });
 const ordersSchema = new mongoose.Schema({
-  //_id: mongoose.Schema.Types.ObjectId,
-  _address: String,
-  _name: String,
-  _phone: String,
-  _status: Number,
-  _totalPayment: Number,
-  _uId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' }, // Đảm bảo rằng collection là 'users' hoặc 'Users' tùy theo cấu hình thực tế của bạn.
-  _shippingFee: Number,
-  _items: [ItemSchema]
+    // _id: mongoose.Schema.Types.ObjectId,
+    _address: String,
+    _name: String,
+    _phone: String,
+    _status: Number,
+    _totalPayment: Number,
+    _uId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' }, // Đảm bảo rằng collection là 'users' hoặc 'Users' tùy theo cấu hình thực tế của bạn.
+    _shippingFee: Number,
+    _items: [ItemSchema]
+
 });
 
 const Orders = mongoose.model('orders', ordersSchema);
