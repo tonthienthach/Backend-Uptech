@@ -24,7 +24,6 @@ router.use('/searchs', searchRoutes)
 router.use('/accounts', accountRoutes)
 router.use('/carts', cartRoutes)
 router.use('/orders', orderRoutes)
-=======
 router.use('/reviews', reviewRoutes)
 router.use('/brands', brandRoutes)
 //ADMIN

@@ -3,6 +3,23 @@ const APIError = require('../helpers/APIError');
 const httpStatus = require('http-status');
 const Products = require('../models/Products'); 
 const Cart = require('../models/Carts');
+
+function sortObject(obj) {
+    var sorted = {};
+    var str = [];
+    var key;
+    for (key in obj){
+        if (obj.hasOwnProperty(key)) {
+        str.push(encodeURIComponent(key));
+        }
+    }
+    str.sort();
+    for (key = 0; key < str.length; key++) {
+        sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
+    }
+    return sorted;
+}
+
 class OrderController {
     // api/orders (get order by userId)
     getOrder = async (req, res) => {
@@ -20,6 +37,7 @@ class OrderController {
         }
     };
 
+
     
     vnpayCreatePayment = async(req, res, next)=>{
         var ipAddr = req.headers['x-forwarded-for'] ||
@@ -27,14 +45,14 @@ class OrderController {
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress;
 
-        var config = require('config');
+        var config = require('../configs/default.json');
         var dateFormat = require('dateformat');
 
         
-        var tmnCode = config.get('QVA40OYU');
-        var secretKey = config.get('IUCIQJMAUZZCCZVJOWHRZJLYGANJNUGI');
-        var vnpUrl = config.get('https://sandbox.vnpayment.vn/paymentv2/vpcpay.html');
-        var returnUrl = config.get('http://localhost:5000/api/orders/vnpay_return');
+        var tmnCode = config.vnp_TmnCode;
+        var secretKey = config.vnp_HashSecret;
+        var vnpUrl = config.vnp_Url; // Điều chỉnh tên giá trị tương ứng
+        var returnUrl = config.vnp_ReturnUrl;
 
         var date = new Date();
 
@@ -42,7 +60,6 @@ class OrderController {
         var orderId = dateFormat(date, 'HHmmss');
         var amount = req.body.amount;
         var bankCode = req.body.bankCode;
-        
         var orderInfo = req.body.orderDescription;
         var orderType = req.body.orderType;
         var locale = req.body.language;
@@ -74,11 +91,12 @@ class OrderController {
         var signData = querystring.stringify(vnp_Params, { encode: false });
         var crypto = require("crypto");     
         var hmac = crypto.createHmac("sha512", secretKey);
-        var signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex"); 
+        var signed = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex");
         vnp_Params['vnp_SecureHash'] = signed;
         vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
+        // res.redirect(vnpUrl)
+        res.status(200).json({ vnpayPaymentUrl: vnpUrl });
 
-        res.redirect(vnpUrl)
     }
     vnpayIPN = async(req, res, next)=>{
         var vnp_Params = req.query;
@@ -88,14 +106,14 @@ class OrderController {
         delete vnp_Params['vnp_SecureHashType'];
 
         vnp_Params = sortObject(vnp_Params);
-        var config = require('config');
-        var secretKey = config.get('vnp_HashSecret');
+        var config = require('../configs/default.json');
+        var secretKey = config.vnp_HashSecret;
         var querystring = require('qs');
         var signData = querystring.stringify(vnp_Params, { encode: false });
         var crypto = require("crypto");     
         var hmac = crypto.createHmac("sha512", secretKey);
-        var signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");     
-        
+        var signed = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex");
+
 
         if(secureHash === signed){
             var orderId = vnp_Params['vnp_TxnRef'];
@@ -117,26 +135,27 @@ class OrderController {
 
         vnp_Params = sortObject(vnp_Params);
 
-        var config = require('config');
-        var tmnCode = config.get('vnp_TmnCode');
-        var secretKey = config.get('vnp_HashSecret');
+        var config = require('../configs/default.json');
+        var tmnCode = config.vnp_TmnCode;
+        var secretKey = config.vnp_HashSecret;
 
         var querystring = require('qs');
         var signData = querystring.stringify(vnp_Params, { encode: false });
         var crypto = require("crypto");     
         var hmac = crypto.createHmac("sha512", secretKey);
-        var signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");     
+        var signed = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex");
 
         if(secureHash === signed){
             //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
 
-            res.render('success', {code: vnp_Params['vnp_ResponseCode']})
+            res.redirect('/');
         } else{
             res.render('success', {code: '97'})
         }
     }
 
     placeOrder = function (req, res, next) {
+        console.log("body");
         console.log(req.body);
     
         const orderData = {
@@ -155,7 +174,7 @@ class OrderController {
                 quantity: item.quantity
             };
         });
-    
+        console.log("orderData");
         console.log(orderData);
     
         const order = new Order(orderData);
@@ -168,23 +187,31 @@ class OrderController {
                             if (!product) {
                                 throw new Error('Sản phẩm không tồn tại');
                             }
-                            console.log('Số lượng sản phẩm trước khi xóa:', product._quantity);
                             product._quantity = product._quantity - item.quantity;
-                            console.log('Số lượng sản phẩm sau khi xóa:', product._quantity);
                             return product.save();
                         });
                 });
                 return Promise.all(allProductPromises)
-                .then(data => {
-                    return Cart.findOne({ uId: savedOrder._uId });
-                  })
+                    .then(data => {
+                        return Cart.findOne({ uId: savedOrder._uId });
+                    })
                     .then(cart => {
-                        cart._cartItems = cart._cartItems.filter(element => {
-                            const found = savedOrder._items.find(item => {
-                                return item.itemId.equals(element.itemId);
-                            });
-                            return !found;
-                        });
+                        console.log("cart._cartItems trước khi cập nhật");
+
+                        console.log(cart._cartItems);
+                        savedOrder._items.forEach(savedItem => {
+                            cart._cartItems = cart._cartItems.filter(cartItem => !savedItem.itemId.equals(cartItem.itemId));
+                          });
+
+                        // cart._cartItems = cart._cartItems.filter(element => {
+                        //     const found = savedOrder._items.find(item => {
+                        //         return item.itemId.equals(element.itemId);
+                        //     });
+                        //     return !found;
+                        // });
+                        console.log("cart._cartItems sau khi cập nhật");
+
+                        console.log(cart._cartItems);
                         return cart.save();
                     })
                     .then(() => {

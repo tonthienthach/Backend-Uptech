@@ -14,7 +14,7 @@ const ItemSchema = new Schema({
     }
   });
 const ordersSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
+    // _id: mongoose.Schema.Types.ObjectId,
     _address: String,
     _name: String,
     _phone: String,
