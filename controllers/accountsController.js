@@ -107,15 +107,51 @@ class UsersController {
         }
 
         try {
-            const auth = await Users.findOne({ _email: user._email })
+            const auth = await Users.findOne({ _email: user._email, _role: { $nin: ['admin', 'shipper'] } })
             if (auth) {
-
                 // Compare the entered password with the stored hash
                 const passwordMatch = await bcrypt.compare(user._pw, auth._pw);
 
                 if (!passwordMatch) {
                     return res.status(401).json({ error: 'Đăng nhập thất bại, mật khẩu sai không chính xác!' });
                 }
+                //Tạo token ở đây
+                let token = createToken(auth._id)
+                res.status(200).json({
+                    message: "Đăng nhập thành công!",
+                    token: token
+                })
+            }
+            else {
+                res.status(400).json({
+                    message: "Email hoặc mật khẩu không chính xác!"
+                })
+            }
+
+        }
+        catch (err) {
+            res.status(400).json({
+                message: err.message
+            })
+        }
+    }
+
+
+    adminLogIn = async (req, res, next) => {
+        const user = {
+            _email: req.body._email,
+            _pw: req.body._pw
+        }
+        try {
+            const auth = await Users.findOne({ _email: user._email, _pw: user._pw })
+            if (auth) {
+
+                // Compare the entered password with the stored hash
+                // const passwordMatch = await bcrypt.compare(user._pw, auth._pw);
+
+                // if (!passwordMatch) {
+                //     return res.status(401).json({ error: 'Đăng nhập thất bại, mật khẩu sai không chính xác!' });
+                // }
                 //Tạo token ở đây
                 let token = createToken(auth._id)
                 res.status(200).json({
@@ -136,12 +172,45 @@ class UsersController {
             })
         }
 
+    }
 
+    shipperLogIn = async (req, res, next) => {
+        const user = {
+            _email: req.body._email,
+            _pw: req.body._pw
+        }
+        try {
+            const auth = await Users.findOne({ _email: user._email, _pw: user._pw })
+            if (auth) {
 
+                // Compare the entered password with the stored hash
+                // const passwordMatch = await bcrypt.compare(user._pw, auth._pw);
 
+                // if (!passwordMatch) {
+                //     return res.status(401).json({ error: 'Đăng nhập thất bại, mật khẩu sai không chính xác!' });
+                // }
+                //Tạo token ở đây
+                let token = createToken(auth._id)
+                res.status(200).json({
+                    message: "Đăng nhập thành công!",
+                    token: token
+                })
+            }
+            else {
+                res.status(400).json({
+                    message: "Email hoặc mật khẩu không chính xác!"
+                })
+            }
 
+        }
+        catch (err) {
+            res.status(400).json({
+                message: err.message
+            })
+        }
 
     }
+
 
 }
 
