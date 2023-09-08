@@ -22,12 +22,12 @@ class CartsController {
 
 
 
-    // api/cart/:uId/add-to-cart
-    // VD: http://localhost:5000/api/carts/64b6413d850413a49cf46648/add-to-cart
+    // api/cart/add-to-cart
     addToCart = async (req, res, next) => {
+
         await Cart.init()
         try {
-            const cart = await Cart.findOneAndUpdate({ uId: req.params.slug, "_cartItems.itemId": { $ne: req.body.itemId } }, {
+            const cart = await Cart.findOneAndUpdate({ uId: req.user._id, "_cartItems.itemId": { $ne: req.body.itemId } }, {
                 $addToSet: {
                     _cartItems: req.body
                 },
@@ -48,13 +48,13 @@ class CartsController {
             }
             //Nếu sản phẩm đã có sẵn trong giỏ hàng thì chỉ cập nhật số lượng
             else {
-                const cart = await Cart.findOneAndUpdate({ uId: req.params.slug, "_cartItems.itemId": { $eq: req.body.itemId } },
+                const cart = await Cart.findOneAndUpdate({ uId: req.user._id, "_cartItems.itemId": { $eq: req.body.itemId } },
                     { $inc: { "_cartItems.$.quantity": req.body.quantity } }, {
                     new: true
                 })
                 if (cart) {
                     res.json({
-                        message: 'Item already existed so only adding updating quantity!',
+                        message: 'Item already existed so only updating quantity!',
                         data: {
                             updatedCart: cart
                         }
@@ -68,7 +68,6 @@ class CartsController {
             res.status(500).json({ message: 'Error adding item to cart', error: error.message });
         }
     }
-
 }
 
 module.exports = new CartsController();

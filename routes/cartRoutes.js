@@ -6,7 +6,7 @@ const verifyToken = require('../middlewares/verifyToken');
 
 
 router.get('/', cartController.getCart);
-router.put('/:slug/add-to-cart', verifyToken, cartController.addToCart);
+router.put('/add-to-cart', verifyToken, cartController.addToCart);
 
 
 module.exports = router

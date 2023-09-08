@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Carts = require('../models/Carts');
 const createToken = require('../middlewares/createToken')
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+
 
 // const createToken = (user) => {
 //     return jwt.sign({
