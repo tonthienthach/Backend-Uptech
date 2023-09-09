@@ -13,7 +13,7 @@ router.get('/onSale', productsController.getOnSale)
 router.get('/bestSelling', productsController.getBestSelling)
 router.get('/related_products/:slug', productsController.getReLatedProducts)
 router.get('/:pid', productsController.getProduct)
-
+router.put('/update-click-count', productsController.updateClickCount)
 
 
 module.exports = router

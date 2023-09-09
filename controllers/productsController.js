@@ -88,6 +88,38 @@ class ProductsController {
 
     }
 
+    //update clickCount of a product
+    //api/products?clickCount=1
+    updateClickCount = async (req, res, next) => {
+        const clickCount = 1
+        const pId = req.query.pId
+        try {
+            const product = await Products.findOneAndUpdate({ _id: pId },
+                { $inc: { "_clickCount": clickCount } },
+                { new: true })
+            if (product) {
+                res.status(200).json(
+                    {
+                        message: 'Cập nhật clickCount thành công!',
+                        //data: product
+                    }
+                )
+            }
+            else {
+                res.status(400).json({
+                    message: 'Cập nhật clickCount thất bại!'
+                })
+            }
+        }
+        catch (err) {
+            res.status(400).json({
+                message: 'Cập nhật clickCount thất bại!',
+                error: err.message
+            })
+        }
+
+    }
+
 }
 
 module.exports = new ProductsController
