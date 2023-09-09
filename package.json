@@ -12,8 +12,8 @@
     "helmet": "^7.0.0",
     "http-status": "^1.6.2",
     "mongoose": "^7.4.0",
-    "pug": "^3.0.2"
-    "jsonwebtoken": "^9.0.2",
+    "pug": "^3.0.2",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "morgan": "^1.10.0",

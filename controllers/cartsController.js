@@ -54,7 +54,7 @@ class CartsController {
                 })
                 if (cart) {
                     res.json({
-                        message: 'Item already existed so only updating quantity!',
+                        message: 'Item already existed so only  updating quantity!',
                         data: {
                             updatedCart: cart
                         }

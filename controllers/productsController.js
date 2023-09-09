@@ -3,10 +3,9 @@ const mongoose = require('mongoose');
 
 class ProductsController {
 
-    // api/:slug
-    // VD: http://localhost:5000/api/products/64b6367474e10f82ea5c17d7
+    // VD: http://localhost:5000/api/products/64baace76d2d02c254dc7afb
     getProduct(req, res, next) {
-        let slugObjectId = new mongoose.Types.ObjectId(req.params.slug)
+        let slugObjectId = new mongoose.Types.ObjectId(req.params.pid)
         Products.findOne({ _id: slugObjectId }).populate('_brandId', '_name')
             .then((product) => {
                 res.json(product);
@@ -53,7 +52,7 @@ class ProductsController {
 
     }
 
-    //get related products
+    // get related products
     // api/products/related_products/64b6377e850413a49cf46632
     getReLatedProducts(req, res, next) {
         let slugObjectId = new mongoose.Types.ObjectId(req.params.slug)
@@ -63,6 +62,32 @@ class ProductsController {
             })
             .catch(next)
     }
+
+    // get products of a brand
+    // api/products?brandId=64b8b8bda77410c2079d22e8
+    getProductsByParam = async (req, res, next) => {
+        try {
+            let categoryId = ''
+            let brandId = ''
+            categoryId = req.query.categoryId;
+            brandId = req.query.brandId;
+            let products = await Products.find({ $or: [{ _categoryId: categoryId }, { _brandId: brandId }, {}] }).populate('_brandId', '_name')
+            if (!products) {
+
+                res.status(400).json({
+                    message: "Xảy ra lỗi trong quá trình tìm kiếm!"
+                })
+            }
+            res.json(products);
+        }
+        catch (err) {
+            res.status(400).json({
+                message: err.message
+            })
+        }
+
+    }
+
 }
 
 module.exports = new ProductsController
