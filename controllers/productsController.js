@@ -64,18 +64,19 @@ class ProductsController {
     }
 
     // get products of a brand
-    // api/products?brandId=64b8b8bda77410c2079d22e8
+    // api/products/get-by-keyId?brandId=64b8b8bda77410c2079d22e8
     getProductsByParam = async (req, res, next) => {
         try {
             let categoryId = ''
             let brandId = ''
+            let order = 1
             categoryId = req.query.categoryId;
             brandId = req.query.brandId;
-            let products = await Products.find({ $or: [{ _categoryId: categoryId }, { _brandId: brandId }, {}] }).populate('_brandId', '_name')
+            order = req.query.order
+            let products = await Products.find({ $or: [{ _categoryId: categoryId }, { _brandId: brandId }] }).populate('_brandId', '_name').sort({ _price: order })
             if (!products) {
-
                 res.status(400).json({
-                    message: "Xảy ra lỗi trong quá trình tìm kiếm!"
+                    message: 'Không tìm thấy sản phẩm nào!'
                 })
             }
             res.json(products);
@@ -86,10 +87,11 @@ class ProductsController {
             })
         }
 
+
     }
 
-    //update clickCount of a product
-    //api/products?clickCount=1
+    //update click Count of a product
+    //api/products
     updateClickCount = async (req, res, next) => {
         const clickCount = 1
         const pId = req.query.pId
@@ -101,7 +103,7 @@ class ProductsController {
                 res.status(200).json(
                     {
                         message: 'Cập nhật clickCount thành công!',
-                        //data: product
+                        // data: product
                     }
                 )
             }
@@ -119,6 +121,8 @@ class ProductsController {
         }
 
     }
+
+
 
 }
 
