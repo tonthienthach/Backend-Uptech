@@ -208,6 +208,46 @@ class UsersController {
 
     }
 
+    resetPasswordForCustomers = async (req, res, next) => {
+        const { email, password } = req.body
+        try {
+            const saltRounds = 10;
+            bcrypt.genSalt(saltRounds, (err, salt) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Đăng ký thất bại: xảy ra lỗi trong quá trình mã hóa mật khẩu!' });
+                }
+                // Hash the password with the generated salt
+                bcrypt.hash(password, salt, async (err, hash) => {
+                    if (err) {
+                        return res.status(500).json({ error: 'Xảy ra lỗi trong quá trình mã hóa mật khẩu!' });
+                    }
+                    const user = await Users.findOneAndUpdate({ _email: email, _role: "customer" }, {
+                        _pw: hash
+                    }, { new: true })
+
+                    if (user) {
+                        res.status(200).json({
+                            message: 'Reset mật khẩu thành công!',
+                            newPassword: hash
+                        })
+                    }
+                    else {
+                        res.status(200).json({
+                            message: 'Reset mật khẩu thất bại!',
+                            newPassword: hash
+                        })
+                    }
+
+                });
+            });
+
+
+        }
+        catch (error) {
+            res.status(500).json({ message: 'Có lỗi xảy ra trong quá trình reset mật khẩu!', error: error.message });
+        }
+    }
+
 
 }
 

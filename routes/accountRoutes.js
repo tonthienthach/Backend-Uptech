@@ -8,5 +8,5 @@ router.post('/signup', accountController.signUp)
 router.post('/login', accountController.logIn)
 router.post('/adminLogin', accountController.adminLogIn)
 router.post('/shipperLogin', accountController.shipperLogIn)
-
+router.post('/resetPasswordForCustomers', accountController.resetPasswordForCustomers)
 module.exports = router
