@@ -11,9 +11,11 @@
     "express-session": "^1.17.3",
     "helmet": "^7.0.0",
     "http-status": "^1.6.2",
+    "jsonwebtoken": "^9.0.2",
+    "mailgen": "^2.0.27",
     "mongoose": "^7.4.0",
-    "pug": "^3.0.2",
-    "jsonwebtoken": "^9.0.2"
+    "nodemailer": "^6.9.5",
+    "pug": "^3.0.2"
   },
   "devDependencies": {
     "morgan": "^1.10.0",

@@ -3,10 +3,9 @@ const mongoose = require('mongoose');
 
 class ProductsController {
 
-    // api/:slug
-    // VD: http://localhost:5000/api/products/64b6367474e10f82ea5c17d7
+    // VD: http://localhost:5000/api/products/64baace76d2d02c254dc7afb
     getProduct(req, res, next) {
-        let slugObjectId = new mongoose.Types.ObjectId(req.params.slug)
+        let slugObjectId = new mongoose.Types.ObjectId(req.params.pid)
         Products.findOne({ _id: slugObjectId }).populate('_brandId', '_name')
             .then((product) => {
                 res.json(product);
@@ -53,7 +52,7 @@ class ProductsController {
 
     }
 
-    //get related products
+    // get related products
     // api/products/related_products/64b6377e850413a49cf46632
     getReLatedProducts(req, res, next) {
         let slugObjectId = new mongoose.Types.ObjectId(req.params.slug)
@@ -63,6 +62,68 @@ class ProductsController {
             })
             .catch(next)
     }
+
+    // get products of a brand
+    // api/products/get-by-keyId?brandId=64b8b8bda77410c2079d22e8
+    getProductsByParam = async (req, res, next) => {
+        try {
+            let categoryId = ''
+            let brandId = ''
+            let order = 1
+            categoryId = req.query.categoryId;
+            brandId = req.query.brandId;
+            order = req.query.order
+            let products = await Products.find({ $or: [{ _categoryId: categoryId }, { _brandId: brandId }] }).populate('_brandId', '_name').sort({ _price: order })
+            if (!products) {
+                res.status(400).json({
+                    message: 'Không tìm thấy sản phẩm nào!'
+                })
+            }
+            res.json(products);
+        }
+        catch (err) {
+            res.status(400).json({
+                message: err.message
+            })
+        }
+
+
+    }
+
+    //update click Count of a product
+    //api/products
+    updateClickCount = async (req, res, next) => {
+        const clickCount = 1
+        const pId = req.query.pId
+        try {
+            const product = await Products.findOneAndUpdate({ _id: pId },
+                { $inc: { "_clickCount": clickCount } },
+                { new: true })
+            if (product) {
+                res.status(200).json(
+                    {
+                        message: 'Cập nhật clickCount thành công!',
+                        // data: product
+                    }
+                )
+            }
+            else {
+                res.status(400).json({
+                    message: 'Cập nhật clickCount thất bại!'
+                })
+            }
+        }
+        catch (err) {
+            res.status(400).json({
+                message: 'Cập nhật clickCount thất bại!',
+                error: err.message
+            })
+        }
+
+    }
+
+
+
 
     addProduct(req, res, next) {
         const newProduct = {
