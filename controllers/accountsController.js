@@ -113,7 +113,7 @@ class UsersController {
                     return res.status(401).json({ error: 'Đăng nhập thất bại, mật khẩu sai không chính xác!' });
                 }
                 //Tạo token ở đây
-                let token = createToken(auth)
+                let token = createToken(auth, '3d')
                 res.status(200).json({
                     message: "Đăng nhập thành công!",
                     token: token
