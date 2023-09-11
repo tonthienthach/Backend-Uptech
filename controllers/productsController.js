@@ -124,6 +124,34 @@ class ProductsController {
 
 
 
+
+    addProduct(req, res, next) {
+        const newProduct = {
+            _id: new mongoose.Types.ObjectId(),
+            _name: req.body._name,
+            _brandId: req.body._brandId,
+            _categoryId: req.body._categoryId,
+            _detail: req.body._detail,
+            _images: req.body._images,
+            _price: req.body._price,
+            _quantity: req.body._quantity,
+            _salePercent: req.body._salePercent,
+            _sold: 0,
+            _status: true,
+            _clickCount: 0
+        }
+        try {
+            Products.create(newProduct)
+            res.status(201).json({
+                message: "Thêm sản phẩm thành công!"
+            })
+        }
+        catch (err) {
+            res.status(400).json({
+                message: err.message
+            })
+        }
+    }
 }
 
 module.exports = new ProductsController
