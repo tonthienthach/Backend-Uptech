@@ -11,7 +11,8 @@ const userSchema = new mongoose.Schema({
     _dateOfBirth: Date,
     _gender: String,
     _avatar: String,
-    _address: Array
+    _addresses: Array,
+    _status: Boolean,
 
 });
 

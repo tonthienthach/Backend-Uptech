@@ -1,14 +1,19 @@
 const Users = require('../models/Users');
 const mongoose = require('mongoose');
 const Carts = require('../models/Carts');
-// const createToken = require('../middlewares/createToken')
-const bodyParser = require('body-parser');
+const createToken = require('../middlewares/createToken')
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
 
-const createToken = (_uId) => {
-    return jwt.sign({ _id: _uId, role: "customer" }, process.env.SECRET_KEY, { expiresIn: '3d' })
-}
+
+// const createToken = (user) => {
+//     return jwt.sign({
+//         _id: user._id,
+//         _role: user._role,
+//         _fname: user._fname,
+//         _lname: user._lname
+//     },
+//         process.env.SECRET_KEY, { expiresIn: '3d' })
+// }
 
 class UsersController {
 
@@ -119,9 +124,8 @@ class UsersController {
         }
 
         try {
-            const auth = await Users.findOne({ _email: user._email })
+            const auth = await Users.findOne({ _email: user._email, _role: { $nin: ['admin', 'shipper'] } })
             if (auth) {
-
                 // Compare the entered password with the stored hash
                 const passwordMatch = await bcrypt.compare(user._pw, auth._pw);
 
@@ -129,7 +133,44 @@ class UsersController {
                     return res.status(401).json({ error: 'Đăng nhập thất bại, mật khẩu sai không chính xác!' });
                 }
                 //Tạo token ở đây
-                let token = createToken(auth._id)
+                let token = createToken(auth)
+                res.status(200).json({
+                    message: "Đăng nhập thành công!",
+                    token: token
+                })
+            }
+            else {
+                res.status(400).json({
+                    message: "Email hoặc mật khẩu không chính xác!"
+                })
+            }
+
+        }
+        catch (err) {
+            res.status(400).json({
+                message: err.message
+            })
+        }
+    }
+
+
+    adminLogIn = async (req, res, next) => {
+        const user = {
+            _email: req.body._email,
+            _pw: req.body._pw,
+        }
+        try {
+            const auth = await Users.findOne({ _email: user._email, _pw: user._pw, _role: 'admin' })
+            if (auth) {
+
+                // Compare the entered password with the stored hash
+                // const passwordMatch = await bcrypt.compare(user._pw, auth._pw);
+
+                // if (!passwordMatch) {
+                //     return res.status(401).json({ error: 'Đăng nhập thất bại, mật khẩu sai không chính xác!' });
+                // }
+                //Tạo token ở đây
+                let token = createToken(auth)
                 res.status(200).json({
                     message: "Đăng nhập thành công!",
                     token: token
@@ -148,12 +189,45 @@ class UsersController {
             })
         }
 
+    }
 
+    shipperLogIn = async (req, res, next) => {
+        const user = {
+            _email: req.body._email,
+            _pw: req.body._pw
+        }
+        try {
+            const auth = await Users.findOne({ _email: user._email, _pw: user._pw, _role: 'shipper' })
+            if (auth) {
 
+                // Compare the entered password with the stored hash
+                // const passwordMatch = await bcrypt.compare(user._pw, auth._pw);
 
+                // if (!passwordMatch) {
+                //     return res.status(401).json({ error: 'Đăng nhập thất bại, mật khẩu sai không chính xác!' });
+                // }
+                //Tạo token ở đây
+                let token = createToken(auth)
+                res.status(200).json({
+                    message: "Đăng nhập thành công!",
+                    token: token
+                })
+            }
+            else {
+                res.status(400).json({
+                    message: "Email hoặc mật khẩu không chính xác!"
+                })
+            }
 
+        }
+        catch (err) {
+            res.status(400).json({
+                message: err.message
+            })
+        }
 
     }
+
 
 }
 

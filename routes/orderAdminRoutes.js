@@ -3,6 +3,7 @@ const router = express.Router();
 const ordersAdminController = require('../controllers/ordersAdminController');
 
 router.get('/', ordersAdminController.getAllOrders);
-router.get('/:slug', ordersAdminController.getOrder);
+router.get('/order-detail/', ordersAdminController.getOrder);
+router.put('/update-order/', ordersAdminController.updateOrder);
 
 module.exports = router
