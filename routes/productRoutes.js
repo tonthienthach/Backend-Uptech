@@ -12,5 +12,4 @@ router.get('/bestSelling', productsController.getBestSelling)
 router.get('/related_products/:slug', productsController.getReLatedProducts)
 router.get('/:slug', productsController.getProduct)
 
-
 module.exports = router

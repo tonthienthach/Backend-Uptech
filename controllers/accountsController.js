@@ -2,6 +2,7 @@ const Users = require('../models/Users');
 const mongoose = require('mongoose');
 const Carts = require('../models/Carts');
 // const createToken = require('../middlewares/createToken')
+const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
@@ -14,6 +15,17 @@ class UsersController {
     async getAllAccounts(req, res, next) {
         await Users.find({})
             .then((users) => {
+                res.json(users);
+            })
+            .catch(next);
+
+    }
+    async getAccount(req, res, next) {
+        console.log(req.user)
+        const userID = req.user._id
+        await Users.findOne({_id:userID})
+            .then((users) => {
+                console.log(users)
                 res.json(users);
             })
             .catch(next);
