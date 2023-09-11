@@ -11,6 +11,7 @@ router.get('/onSale', productsController.getOnSale)
 router.get('/bestSelling', productsController.getBestSelling)
 router.get('/related_products/:slug', productsController.getReLatedProducts)
 router.get('/:slug', productsController.getProduct)
+router.get('/addProduct', productsController.addProduct)
 
 
 module.exports = router
