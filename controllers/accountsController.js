@@ -2,7 +2,8 @@ const Users = require('../models/Users');
 const mongoose = require('mongoose');
 const Carts = require('../models/Carts');
 const createToken = require('../middlewares/createToken')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const { TOO_MANY_REQUESTS } = require('http-status');
 
 
 
@@ -208,6 +209,7 @@ class UsersController {
 
     }
 
+    // Quên mật khẩu
     resetPasswordForCustomers = async (req, res, next) => {
         const { email, password } = req.body
         try {
@@ -247,6 +249,189 @@ class UsersController {
             res.status(500).json({ message: 'Có lỗi xảy ra trong quá trình reset mật khẩu!', error: error.message });
         }
     }
+
+    //http://localhost:5000/api/accounts/getProfile
+    //method: GET
+    //token bearer
+    getProfile = async (req, res, next) => {
+        const { _id, _role } = req.user
+        try {
+            const user = await Users.findOne({ _id: _id, _role: _role })
+            if (user) {
+                res.status(200).json({
+                    message: 'Lấy hồ sơ thành công!',
+                    data: {
+                        user: user
+                    }
+                })
+            }
+            else {
+                res.status(400).json({
+                    message: 'Không tìm thấy người dùng!'
+                })
+            }
+        }
+        catch (error) {
+            res.status(400).json({
+                message: 'Có lỗi xảy ra trong quá trình lấy hồ sơ!',
+                error: error.message
+            })
+        }
+
+
+    }
+
+    //http://localhost:5000/api/accounts/updateProfile
+    //method: POST
+    // token bearer
+    // body: {
+    //     {
+
+    //         "_fname":"My",
+    //         "_lname": "Tra",
+    //         "_phones": [
+    //             "0938049556",
+    //             "0994886620",
+    //             "0913935810"
+    //         ],
+    //         "_email":"mytran070202@gmail.com",
+    //         "_dateOfBirth": "2002-12-09",
+    //         "_gender":"male",
+    //         "avatar":"https://lh3.googleusercontent.com/ogw/AGvuzYZ97zGHplrj5kwwvMUP3V3XYo97H9v-s-NCvLgLeA=s32-c-mo",
+    //         "_addresses":[
+    //             "566 Nguyễn Thái Sơn, F5, Q.GV, TP.HCM"
+    //         ]
+
+    // }
+    // }
+    updateProfile = async (req, res, next) => {
+        const { _fname, _lname, _phones, _email, _dateOfBirth, _gender, _avatar, _addresses } = req.body
+        const { _id, _role } = req.user
+        try {
+            const user = await Users.findOneAndUpdate({ _id: _id, _role: _role }, {
+                _fname: _fname,
+                _lname: _lname,
+                _phones: _phones,
+                _email: _email,
+                _dateOfBirth: _dateOfBirth,
+                _gender: _gender,
+                _avatar: _avatar,
+                _addresses: _addresses
+            }, {
+                new: true
+            })
+            if (user) {
+                res.status(200).json({
+                    message: 'Cập nhật hồ sơ thành công!',
+                    data: {
+                        updatedUser: user
+                    }
+                })
+            }
+            else {
+                res.status(400).json({
+                    message: "Cập nhật không thành công!",
+
+                })
+            }
+        } catch (error) {
+            res.status(400).json({
+                message: "Cập nhật không thành công!",
+                error: error.message
+
+            })
+        }
+    }
+
+    // đổi mật khẩu sau khi đăng nhập vào ứng dụng
+    //http://localhost:5000/api/accounts/changePassWord
+    // method: PUT
+    // token bearer
+    // body: {
+    //     {
+    //         "oldPassword":"176tcn940282$$",
+    //         "newPassword": "176tcn940282$$",
+    //         "retypedNewPassword": "176tcn940282$$"
+    //     }
+    // }
+
+    changePassWord = async (req, res, next) => {
+        const { oldPassword, newPassword, retypedNewPassword } = req.body
+        const { _id, _role } = req.user
+
+        try {
+            const user = await Users.findOne({ _id: _id, _role: _role })
+            if (user) {
+                try {
+                    const passwordMatch = await bcrypt.compare(oldPassword, user._pw);
+                    if (!passwordMatch) {
+                        res.status(400).json({
+                            message: 'Đổi mật khẩu thất bại, mật khẫu cũ bị sai!',
+                        })
+                    }
+
+
+
+                    if (newPassword === retypedNewPassword) {
+                        const saltRounds = 10;
+                        bcrypt.genSalt(saltRounds, (err, salt) => {
+                            if (err) {
+                                return res.status(500).json({ error: 'Đăng ký thất bại: xảy ra lỗi trong quá trình mã hóa mật khẩu!' });
+                            }
+                            // Hash the password with the generated salt
+                            bcrypt.hash(newPassword, salt, async (err, hash) => {
+                                if (err) {
+                                    return res.status(500).json({ error: 'Đổi mật khẩu thất bại: xảy ra lỗi trong quá trình mã hóa mật khẩu!' });
+                                }
+                                //Cập nhật mật khẩu
+                                try {
+                                    const updatedUser = await Users.findOneAndUpdate({ _id: _id, _role: _role }, {
+                                        _pw: hash
+                                    }, { new: true })
+                                    res.status(200).json({
+                                        message: 'Cập nhật mật khẩu mới thành công!',
+                                        newPassword: newPassword
+                                    })
+                                }
+                                catch (err) {
+                                    res.status(400).json({
+                                        message: 'Cập nhật mật khẩu mới thất bại!'
+                                    })
+                                }
+                            });
+                        });
+
+                    }
+                    else {
+                        res.status(400).json({
+                            message: 'Mật khẩu nhập lại không trùng khớp!'
+                        })
+                    }
+
+                }
+                catch (e) {
+                    res.status(400).json(
+                        {
+                            message: 'Đổi mật khẩu thất bại!',
+                            error: e.message
+                        }
+
+                    )
+                }
+            }
+            else {
+                res.status(400).json({
+                    message: 'Cập nhật mật khẩu mới thất bại, không tìm thấy user!'
+                })
+            }
+        } catch (err) { }
+
+
+
+    }
+
+    //post new comments
+
 
 
 }
