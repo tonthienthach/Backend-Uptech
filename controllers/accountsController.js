@@ -248,6 +248,34 @@ class UsersController {
         }
     }
 
+    getProfile = async (req, res, next) => {
+        const { _id, _role } = req.user
+        try {
+            const user = await Users.findOne({ _id: _id, _role: _role })
+            if (user) {
+                res.status(200).json({
+                    message: 'Lấy hồ sơ thành công!',
+                    data: {
+                        user: user
+                    }
+                })
+            }
+            else {
+                res.status(400).json({
+                    message: 'Không tìm thấy người dùng!'
+                })
+            }
+        }
+        catch (error) {
+            res.status(400).json({
+                message: 'Có lỗi xảy ra trong quá trình lấy hồ sơ!',
+                error: error.message
+            })
+        }
+
+
+    }
+
 
 }
 
