@@ -2,7 +2,8 @@ const Users = require('../models/Users');
 const mongoose = require('mongoose');
 const Carts = require('../models/Carts');
 const createToken = require('../middlewares/createToken')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const { TOO_MANY_REQUESTS } = require('http-status');
 
 
 
@@ -274,6 +275,45 @@ class UsersController {
         }
 
 
+    }
+
+    updateProfile = async (req, res, next) => {
+        const { _fname, _lname, _phones, _email, _dateOfBirth, _gender, _avatar, _addresses } = req.body
+        const { _id, _role } = req.user
+        try {
+            const user = await Users.findOneAndUpdate({ _id: _id, _role: _role }, {
+                _fname: _fname,
+                _lname: _lname,
+                _phones: _phones,
+                _email: _email,
+                _dateOfBirth: _dateOfBirth,
+                _gender: _gender,
+                _avatar: _avatar,
+                _addresses: _addresses
+            }, {
+                new: true
+            })
+            if (user) {
+                res.status(200).json({
+                    message: 'Cập nhật hồ sơ thành công!',
+                    data: {
+                        updatedUser: user
+                    }
+                })
+            }
+            else {
+                res.status(400).json({
+                    message: "Cập nhật không thành công!",
+
+                })
+            }
+        } catch (error) {
+            res.status(400).json({
+                message: "Cập nhật không thành công!",
+                error: error.message
+
+            })
+        }
     }
 
 
