@@ -12,4 +12,5 @@ router.post('/shipperLogin', accountController.shipperLogIn)
 router.post('/resetPasswordForCustomers', accountController.resetPasswordForCustomers)
 router.get('/getProfile', verifyToken, accountController.getProfile)
 router.put('/updateProfile', verifyToken, accountController.updateProfile)
+router.put('/changePassWord', verifyToken, accountController.changePassWord)
 module.exports = router

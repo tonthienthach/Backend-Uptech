@@ -209,6 +209,7 @@ class UsersController {
 
     }
 
+    // Quên mật khẩu
     resetPasswordForCustomers = async (req, res, next) => {
         const { email, password } = req.body
         try {
@@ -314,6 +315,82 @@ class UsersController {
 
             })
         }
+    }
+
+    // đổi mật khẩu sau khi đăng nhập vào ứng dụng
+    changePassWord = async (req, res, next) => {
+        const { oldPassword, newPassword, retypedNewPassword } = req.body
+        const { _id, _role } = req.user
+
+        try {
+            const user = await Users.findOne({ _id: _id, _role: _role })
+            if (user) {
+                try {
+                    const passwordMatch = await bcrypt.compare(oldPassword, user._pw);
+                    if (!passwordMatch) {
+                        res.status(400).json({
+                            message: 'Đổi mật khẩu thất bại, mật khẫu cũ bị sai!',
+                        })
+                    }
+
+
+
+                    if (newPassword === retypedNewPassword) {
+                        const saltRounds = 10;
+                        bcrypt.genSalt(saltRounds, (err, salt) => {
+                            if (err) {
+                                return res.status(500).json({ error: 'Đăng ký thất bại: xảy ra lỗi trong quá trình mã hóa mật khẩu!' });
+                            }
+                            // Hash the password with the generated salt
+                            bcrypt.hash(newPassword, salt, async (err, hash) => {
+                                if (err) {
+                                    return res.status(500).json({ error: 'Đổi mật khẩu thất bại: xảy ra lỗi trong quá trình mã hóa mật khẩu!' });
+                                }
+                                //Cập nhật mật khẩu
+                                try {
+                                    const updatedUser = await Users.findOneAndUpdate({ _id: _id, _role: _role }, {
+                                        _pw: hash
+                                    }, { new: true })
+                                    res.status(200).json({
+                                        message: 'Cập nhật mật khẩu mới thành công!',
+                                        newPassword: newPassword
+                                    })
+                                }
+                                catch (err) {
+                                    res.status(400).json({
+                                        message: 'Cập nhật mật khẩu mới thất bại!'
+                                    })
+                                }
+                            });
+                        });
+
+                    }
+                    else {
+                        res.status(400).json({
+                            message: 'Mật khẩu nhập lại không trùng khớp!'
+                        })
+                    }
+
+                }
+                catch (e) {
+                    res.status(400).json(
+                        {
+                            message: 'Đổi mật khẩu thất bại!',
+                            error: e.message
+                        }
+
+                    )
+                }
+            }
+            else {
+                res.status(400).json({
+                    message: 'Cập nhật mật khẩu mới thất bại, không tìm thấy user!'
+                })
+            }
+        } catch (err) { }
+
+
+
     }
 
 
