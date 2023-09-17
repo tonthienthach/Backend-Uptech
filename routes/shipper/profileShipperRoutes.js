@@ -4,4 +4,5 @@ const profileShipperController = require('../../controllers/shipper/ProfileShipp
 
 router.get('/:slug', profileShipperController.getUser);
 router.put('/edit/', profileShipperController.editProfile);
+router.post('/checkPass/', profileShipperController.checkPassWord);
 module.exports = router
