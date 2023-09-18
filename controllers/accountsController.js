@@ -17,6 +17,17 @@ class UsersController {
             .catch(next);
 
     }
+    async getAccount(req, res, next) {
+        console.log(req.user)
+        const userID = req.user._id
+        await Users.findOne({_id:userID})
+            .then((users) => {
+                console.log(users)
+                res.json(users);
+            })
+            .catch(next);
+
+    }
 
     //sign up
     // api/accounts/signup

@@ -18,5 +18,4 @@ router.get('/:pid', productsController.getProduct)
 
 router.get('/addProduct', productsController.addProduct)
 
-
 module.exports = router

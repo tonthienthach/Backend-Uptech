@@ -55,3 +55,6 @@ Content-Type: application/json
     "orderType": "100000",
     "language": "vn"
 }
+###
+# get order
+GET http://localhost:5000/api/categories/products?categoryId=64b75761e8358189aea4bd54
