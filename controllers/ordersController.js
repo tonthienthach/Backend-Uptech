@@ -155,9 +155,9 @@ class OrderController {
     }
 
     placeOrder = function (req, res, next) {
-        console.log("body");
+        console.log("00000000000000000000000000000");
         console.log(req.body);
-    
+        const userId = req.user._id;
         const orderData = {
             _address: req.body._address,
             _name: req.body._name,
@@ -165,7 +165,8 @@ class OrderController {
             _status: req.body._status,
             _totalPayment: req.body._totalPayment,
             _shippingFee: req.body._shippingFee,
-            _uId: req.body._uId
+            _uId: userId,
+            _items: req.body._items
         };
     
         orderData._items = req.body._items.map(item => {
@@ -181,6 +182,8 @@ class OrderController {
     
         order.save()
             .then(savedOrder => {
+                console.log('savedOrder')
+                console.log(savedOrder)
                 const allProductPromises = savedOrder._items.map(item => {
                     return Products.findOne({ _id: item.itemId })
                         .then(product => {
@@ -203,12 +206,12 @@ class OrderController {
                             cart._cartItems = cart._cartItems.filter(cartItem => !savedItem.itemId.equals(cartItem.itemId));
                           });
 
-                        // cart._cartItems = cart._cartItems.filter(element => {
-                        //     const found = savedOrder._items.find(item => {
-                        //         return item.itemId.equals(element.itemId);
-                        //     });
-                        //     return !found;
-                        // });
+                        cart._cartItems = cart._cartItems.filter(element => {
+                            const found = savedOrder._items.find(item => {
+                                return item.itemId.equals(element.itemId);
+                            });
+                            return !found;
+                        });
                         console.log("cart._cartItems sau khi cập nhật");
 
                         console.log(cart._cartItems);
