@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const Categories = require('../models/Categories')
 const Products = require('../models/Products');
 
-class categoriesController{
-  // api/categorys (get all categorys)
+class categoriesController {
+    // api/categorys (get all categorys)
     getAllCategories(req, res, next) {
-        Categories.find({})
+        Categories.find({ _status: true })
             .then((Categories) => {
                 res.json(Categories);
             })
