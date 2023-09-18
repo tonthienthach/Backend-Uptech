@@ -22,7 +22,8 @@ const ordersSchema = new mongoose.Schema({
     _totalPayment: Number,
     _uId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' }, // Đảm bảo rằng collection là 'users' hoặc 'Users' tùy theo cấu hình thực tế của bạn.
     _shippingFee: Number,
-    _items: [ItemSchema]
+    _items: [ItemSchema],
+    _shipperId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
 
 });
 
