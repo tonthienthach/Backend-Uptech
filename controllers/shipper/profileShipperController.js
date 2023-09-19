@@ -5,12 +5,13 @@ const multer = require('multer');
 
 class ProfileShipperController {
     
-    async getUser(req, res) {
+    async getUser(req, res, next) {
+        const { _id, _role } = req.user
         try {
-            const slugObjectId = new mongoose.Types.ObjectId(req.params.slug);
-            const query = {_id : slugObjectId};
-            const user = await Users.findOne(query);
-            res.json(user);
+            const user = await Users.findOne({ _id: _id, _role: _role })
+            if (user) {
+                res.json(user);
+            }
         }
 
         catch (error) {
