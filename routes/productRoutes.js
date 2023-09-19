@@ -16,6 +16,9 @@ router.get('/bestSelling', productsController.getBestSelling)
 router.get('/related_products/:slug', productsController.getReLatedProducts)
 router.get('/:pid', productsController.getProduct)
 
-router.get('/addProduct', productsController.addProduct)
+router.post('/add', productsController.addProduct)
+router.put('/edit', productsController.editProfile)
+router.put('/hide/', productsController.hideProduct)
+router.put('/active/', productsController.activeProduct)
 
 module.exports = router

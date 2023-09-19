@@ -189,17 +189,15 @@ class UsersController {
             _pw: req.body._pw
         }
         try {
-            const auth = await Users.findOne({ _email: user._email, _pw: user._pw, _role: 'shipper' })
+            const auth = await Users.findOne({ _email: user._email, _role: 'shipper' })
             if (auth) {
-
                 // Compare the entered password with the stored hash
-                // const passwordMatch = await bcrypt.compare(user._pw, auth._pw);
+                const passwordMatch = await bcrypt.compare(user._pw, auth._pw);
 
-                // if (!passwordMatch) {
-                //     return res.status(401).json({ error: 'Đăng nhập thất bại, mật khẩu sai không chính xác!' });
-                // }
-                //Tạo token ở đây
-                let token = createToken(auth)
+                if (!passwordMatch) {
+                    return res.status(401).json({ error: 'Đăng nhập thất bại, mật khẩu sai không chính xác!' });
+                }
+                let token = createToken(auth, '3d')
                 res.status(200).json({
                     message: "Đăng nhập thành công!",
                     token: token

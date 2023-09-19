@@ -1,8 +1,10 @@
 const Users = require('../../models/Users');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const multer = require('multer');
 
 class ProfileShipperController {
+    
     async getUser(req, res) {
         try {
             const slugObjectId = new mongoose.Types.ObjectId(req.params.slug);
@@ -28,6 +30,7 @@ class ProfileShipperController {
                 $set:{
                     _fname: req.body._fname,
                     _lname: req.body._lname,
+                    _avatar: req.body._avatar,
                     _gender: req.body._gender,
                     _dateOfBirth: req.body._dateOfBirth,
                 }

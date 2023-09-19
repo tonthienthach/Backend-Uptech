@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const compress = require('compression')
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 require("dotenv").config();
 
@@ -45,3 +46,7 @@ app.use('/api', route)
 app.listen(process.env.PORT, () => {
   console.log(`app is running on port ${process.env.PORT}`);
 });
+
+// Sử dụng body-parser middleware
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
