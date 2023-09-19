@@ -127,7 +127,7 @@ class ProductsController {
 
     addProduct(req, res, next) {
         const newProduct = {
-            _id: new mongoose.Types.ObjectId(),
+            // _id: new mongoose.Types.ObjectId(),
             _name: req.body._name,
             _brandId: req.body._brandId,
             _categoryId: req.body._categoryId,
@@ -150,6 +150,61 @@ class ProductsController {
             res.status(400).json({
                 message: err.message
             })
+        }
+    }
+
+    async editProfile(req, res) {
+        try {
+            const data = req.body;
+            const {pId} = req.query;
+            const query = {_id : pId};
+            console.log(data);
+            console.log(query);
+            const update = { 
+                $set:{
+                    _name: req.body._name,
+                    _brandId: req.body._brandId,
+                    _categoryId: req.body._categoryId,
+                    _detail: req.body._detail,
+                    _images: req.body._images,
+                    _price: req.body._price,
+                    _quantity: req.body._quantity,
+                    _salePercent: req.body._salePercent,
+                }
+            };
+            const product = await Products.updateOne(query, update);
+            res.json(product.matchedCount);
+        }
+
+        catch (error) {
+            console.error('Lỗi khi cập nhật thông tin!');
+            res.status(500).json({error: 'Đã xảy ra lỗi khi cập nhật thông tin'});
+        }
+    }
+
+    async hideProduct (req, res) {
+        try {
+            const {pId} = req.query;
+            const query = {_id: pId};
+            const result = await Products.updateOne(query, {$set: {_status: false}});
+            res.json(result.matchedCount);
+        }
+        catch (error) {
+            console.error('Lỗi khi ẩn sản phẩm:', error);
+            res.status(500).json({ error: 'Đã xảy ra lỗi khi ẩn sản phẩm.' });
+        }
+    }
+
+    async activeProduct (req, res) {
+        try {
+            const {pId} = req.query;
+            const query = {_id: pId};
+            const result = await Products.updateOne(query, {$set: {_status: true}});
+            res.json(result.matchedCount);
+        }
+        catch (error) {
+            console.error('Lỗi khi kích hoạt sản phẩm:', error);
+            res.status(500).json({ error: 'Đã xảy ra lỗi khi kích hoạt sản phẩm.' });
         }
     }
 }

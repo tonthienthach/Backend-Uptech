@@ -4,7 +4,7 @@ class searchController {
     getSearch = async (req, res) =>{
         try {
             const {q} = req.query;
-            const products = await Product.find({_name: { $regex: q, $options: 'i'}}).limit(5);
+            const products = await Product.find({_name: { $regex: q, $options: 'i'}}).limit(7);
             res.json(products);
         } catch (error) {
             console.error(error.message);

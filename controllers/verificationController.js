@@ -165,6 +165,64 @@ class verificationController {
 
     }
 
+    resetPassWordByOTPForShippers = async (req, res) => {
+        const { otp, email, password} = req.body
+
+        try {
+            if (otp === this.verificationCode) {
+                try {
+                    const saltRounds = 10;
+                    bcrypt.genSalt(saltRounds, (err, salt) => {
+                        if (err) {
+                            return res.status(500).json({ error: 'Đăng ký thất bại: xảy ra lỗi trong quá trình mã hóa mật khẩu!' });
+                        }
+                        // Hash the password with the generated salt
+                        bcrypt.hash(password, salt, async (err, hash) => {
+                            if (err) {
+                                return res.status(500).json({ error: 'Xảy ra lỗi trong quá trình mã hóa mật khẩu!' });
+                            }
+                            const user = await Users.findOneAndUpdate({ _email: email, _role: "shipper" }, {
+                                _pw: hash
+                            }, { new: true })
+
+                            if (user) {
+                                res.status(200).json({
+                                    message: 'Reset mật khẩu thành công!',
+                                    newPassword: hash
+                                })
+                            }
+                            else {
+                                res.status(200).json({
+                                    message: 'Reset mật khẩu thất bại!',
+                                    newPassword: hash
+                                })
+                            }
+
+                        });
+                    });
+
+                }
+                catch (error) {
+                    res.status(500).json({ message: 'Có lỗi xảy ra trong quá trình reset mật khẩu!', error: error.message });
+                }
+            }
+            else {
+                res.status(404).json({
+                    message: 'OTP không trùng khớp, xác thực thất bại!!',
+                    // verificationCode: this.verificationCode,
+                    // OTP: otp
+                })
+            }
+        }
+        catch (err) {
+            res.status(404).json({
+                message: 'OTP hết hiệu lực!',
+                lỗi: err.message
+            })
+        }
+
+    }
+
 
 }
 

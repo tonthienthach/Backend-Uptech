@@ -23,8 +23,8 @@ class CustomerAdminController {
             res.json(result.matchedCount);
         }
         catch (error) {
-            console.error('Lỗi khi xóa khách hàng:', error);
-            res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa khách hàng.' });
+            console.error('Lỗi khi ẩn khách hàng:', error);
+            res.status(500).json({ error: 'Đã xảy ra lỗi khi ẩn khách hàng.' });
         }
     }
 
@@ -36,8 +36,8 @@ class CustomerAdminController {
             res.json(result.matchedCount);
         }
         catch (error) {
-            console.error('Lỗi khi xóa khách hàng:', error);
-            res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa khách hàng.' });
+            console.error('Lỗi khi kích hoạt khách hàng:', error);
+            res.status(500).json({ error: 'Đã xảy ra lỗi khi kích hoạt khách hàng.' });
         }
     }
 

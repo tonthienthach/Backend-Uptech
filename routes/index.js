@@ -18,6 +18,7 @@ const brandRoutes = require('./brandRoutes.js')
 const verificationRoutes = require('./verificationRoutes.js')
 
 const profileShipperRoutes = require('./shipper/profileShipperRoutes.js')
+const orderShipperRoutes = require('./shipper/orderShipperRoutes.js')
 
 router.use('/products', productRoutes)
 router.use('/categories', categoryRoutes)
@@ -37,5 +38,6 @@ router.use('/admin/profile', profileAdminRoutes)
 
 //SHIPPER
 router.use('/shipper/profile', profileShipperRoutes)
+router.use('/shipper/orders', orderShipperRoutes)
 
 module.exports = router
