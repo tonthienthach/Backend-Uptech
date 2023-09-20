@@ -32,7 +32,8 @@ class ReviewsControler {
 
     //http://localhost:5000/api/reviews/post-new-comment
     //method: POST
-    //     //{
+    //token bearer
+    // Body: {
 
     //   "_content": "Sản phẩm tệ quá",
     //   "_rating": 1,
